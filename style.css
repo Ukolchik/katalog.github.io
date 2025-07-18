@@ -9,6 +9,7 @@ header {
   color: white;
   padding: 1px 0;
   text-align: center;
+  width: 100%;
 }
 
 .gallery {
@@ -24,7 +25,7 @@ header {
 
 .item img {
   width: 100%;
-  max-width: 300px;
+  max-width: 80%;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -32,7 +33,7 @@ header {
 
 .item p {
   margin-top: 10px;
-  font-size: 0.9em;
+  font-size: 0.8em;
   font-weight: bold;
 }
 
