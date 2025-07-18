@@ -7,7 +7,7 @@ body {
 header {
   background-color: rgba(72, 72, 209, 0.973);
   color: white;
-  padding: 10px 0;
+  padding: 1px 0;
   text-align: center;
 }
 
@@ -77,9 +77,9 @@ header {
 
 .catalog-button {
   padding: 20px 40px;
-  font-size: 20px;
+  font-size: 40px;
   text-decoration: none;
-  background-color: #0077cc;
+  background-color: #013077;
   color: white;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -110,6 +110,7 @@ header {
   font-size: 20px;
   color: #222;
   line-height: 1.6;
+  margin-bottom: 50px;
 }
 
 .order-info a {
