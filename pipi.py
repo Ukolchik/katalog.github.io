@@ -1,7 +1,7 @@
 import os
 
 # Путь к папке с изображениями
-folder_path = 'images'  # например: r'C:\Users\Ivan\Desktop\картинки'
+folder_path = 'images/каменка'  # например: r'C:\Users\Ivan\Desktop\картинки'
 
 # Поддерживаемые расширения
 image_extensions = {'.png', '.jpg', '.jpeg', '.webp'}

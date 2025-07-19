@@ -5,83 +5,192 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Кресты с камнями</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    #topBtn {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+      font-size: 24px;
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    #topBtn:hover {
+      background-color: #222;
+    }
+  </style>
 </head>
 <body>
+
   <header>
-    <h1 href="index.html">Каталог</h1>
-      <a href="index.html" class="back-link">← На главную</a>
-    <p>
-        Тел. +7 (910) 985-11-85<br>
-    </p>
+    <h1>Каталог</h1>
+    <a href="index.html" class="back-link">← На главную</a>
+    <p>Тел. +7 (910) 985-11-85</p>
   </header>
 
-  <main class="gallery">
-    <div class="item">
-      <img src="images/А-001.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>А-001</p>
-    </div>
-    <div class="item">
-      <img src="images/А-002.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>А-002</p>
-    </div>
-    <div class="item">
-      <img src="images/А-003.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-004.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-005.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-006.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-007.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-002.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-002.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <!-- добавь остальные товары по этой же структуре -->
-  </main>
+  <main class="gallery" id="gallery"></main>
 
   <!-- Модальное окно -->
   <div id="modal" class="modal" onclick="closeModal()">
-    <span class="close">&times;</span>
+    <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modal-img" />
   </div>
 
+  <!-- Кнопка "Наверх" -->
+  <button onclick="scrollToTop()" id="topBtn" title="Наверх">↑</button>
+
+  <div class="order-info">
+    Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами:<br>
+    <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a><br>
+    <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a><br>
+    <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
+  </div>
+
   <script>
+    const imageFiles = [
+  "А3-032_2,15.jpg",
+  "АЗ-001ц_2,39.jpg",
+  "АЗ-002ц_2,42.jpg",
+  "АЗ-003ц_1,51.jpg",
+  "АЗ-004ц_1,79.jpg",
+  "АЗ-005_1,52.jpg",
+  "АЗ-006_1,13.jpg",
+  "АЗ-007_0,98.jpg",
+  "АЗ-008_1,27.jpg",
+  "АЗ-009_3,79.jpg",
+  "АЗ-010_0,90.jpg",
+  "АЗ-011_3,02.jpg",
+  "АЗ-012_0,92.jpg",
+  "АЗ-013_1,88.jpg",
+  "АЗ-014_1,65.jpg",
+  "АЗ-015_2,35.jpg",
+  "АЗ-016_2,30.jpg",
+  "АЗ-017_1,04.jpg",
+  "АЗ-018_1,59.jpg",
+  "АЗ-019_1,25.jpg",
+  "АЗ-020_0,62.jpg",
+  "АЗ-021_0,75.jpg",
+  "АЗ-022_1,68.jpg",
+  "АЗ-023_1,15.jpg",
+  "АЗ-024_0,80.jpg",
+  "АЗ-025_0,85.jpg",
+  "АЗ-026_1,71.jpg",
+  "АЗ-027_1,21.jpg",
+  "АЗ-028_0,79.jpg",
+  "АЗ-029_2,00.jpg",
+  "АЗ-030_2,65.jpg",
+  "АЗ-031_0,95.jpg",
+  "АЗ-033_0,89.jpg",
+  "АЗ-034_1,44.jpg",
+  "АЗ-035_3,42.jpg",
+  "АЗ-036_2,18.jpg",
+  "АЗ-037_1,25.jpg",
+  "АЗ-038_1,76.jpg",
+  "АЗ-039_1,19.jpg",
+  "АЗ-040_3,20.jpg",
+  "АЗ-041_3,47.jpg",
+  "АЗ-042_2,54.jpg",
+  "АЗ-042_3,17.jpg",
+  "АЗ-043_3,30.jpg",
+  "АЗ-044_2,61.jpg",
+  "АЗ-045_2,47.jpg",
+  "АЗ-046_2,20.jpg",
+  "АЗ-047_1,46.jpg",
+  "АЗ-048_2,87.jpg",
+  "АЗ-049_1,95.jpg",
+  "АЗ-050_1,13.jpg",
+  "АЗ-051_1,39.jpg",
+  "АЗ-052_1,59.jpg",
+  "АЗ-053_1,76.jpg",
+  "АЗ-054_1,24.jpg",
+  "АЗ-055_2,87.jpg",
+  "АЗ-056_2,05.jpg",
+  "АЗ-057_1,92.jpg",
+  "АЗ-058_1,68.jpg",
+  "АЗ-059_2,01.jpg",
+  "АЗ-060_2,12.jpg",
+  "АЗ-061_2,06.jpg",
+  "АЗ-062_2,22.jpg",
+  "АЗ-063_1,63.jpg",
+  "АЗ-064_2,18.jpg",
+  "АЗ-065_1,09.jpg",
+  "АЗ-066_4,42.jpg",
+  "АЗ-067_1,37.jpg",
+  "АЗ-068_7,49.jpg",
+  "АЗ-069_2,84.jpg",
+  "АЗ-070_2,25.jpg",
+  "АЗ-071_0,73.jpg",
+  "АЗ-072_0,40.jpg",
+  "АЗ-073_0,60.jpg",
+  "АЗ-074_1,43.jpg",
+  "АЗ-075_0,57.jpg",
+  "АЗ-076_0,58.jpg",
+  "АЗ-077_2,85.jpg",
+  "АЗ-078_5,19.jpg",
+  "АЗ-079_3,25.jpg",
+  "АЗ-080_1,87.jpg",
+  "АЗ-081_1,15.jpg",
+  "АЗ-082_2,45.jpg",
+  "АЗ-083_2,02.jpg",
+  "АЗ-084_2,49.jpg",
+  "АЗ-085_2,12.jpg",
+  "АЗ-086_3,18.jpg",
+  "АЗ-087_3,76.jpg",
+  "АЗ-088_1,98.jpg",
+  "АЗ-090_1,19.jpg",
+  "АЗ-091_2,60.jpg",
+  "АЗ-092_2,14.jpg",
+  "АЗ-093_2,90.jpg",
+  "АЗ-094_2,62.jpg",
+  "АЗ-095_2,05.jpg",
+  "АЗ-096_3,20.jpg",
+  "АЗ-097_2,18.jpg",
+  "АЗ-098_7,24.jpg",
+  "АЗ-099_1,93.jpg",
+  "АЗ-100_2,67.jpg",
+  "АЗ-101_1,66.jpg",
+  "АЗ-102_1,75.jpg",
+  "АЗр-098_7,24.jpg"
+];
+    const gallery = document.getElementById("gallery");
+
+    imageFiles.forEach(file => {
+      const name = file.split('/').pop().replace(/\.[^/.]+$/, "");
+      const src = `images/каменка/${file}`;
+
+      const item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = `
+        <img src="${src}" alt="${name}" onclick="openModal(this.src)" />
+        <p>${name}</p>
+      `;
+      gallery.appendChild(item);
+    });
+
     function openModal(src) {
-      document.getElementById("modal").style.display = "block";
       document.getElementById("modal-img").src = src;
+      document.getElementById("modal").style.display = "flex";
     }
 
     function closeModal() {
       document.getElementById("modal").style.display = "none";
     }
-  </script>
-  <div class="order-info">
-    Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами
-    <br>
-    <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a>
-    <br>
-    <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a>
-    <br>
-    <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
-  </div>
-</body>
-<footer>
 
-</footer>
+    window.onscroll = function () {
+      const btn = document.getElementById("topBtn");
+      btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
+    };
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
 </html>
