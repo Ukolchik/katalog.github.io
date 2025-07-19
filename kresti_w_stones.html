@@ -54,7 +54,6 @@
 
   <script>
     const imageFiles = [
-  "А3-032_2,15.jpg",
   "АЗ-001ц_2,39.jpg",
   "АЗ-002ц_2,42.jpg",
   "АЗ-003ц_1,51.jpg",
@@ -86,6 +85,7 @@
   "АЗ-029_2,00.jpg",
   "АЗ-030_2,65.jpg",
   "АЗ-031_0,95.jpg",
+  "АЗ-032_2,15.jpg",
   "АЗ-033_0,89.jpg",
   "АЗ-034_1,44.jpg",
   "АЗ-035_3,42.jpg",
@@ -155,23 +155,24 @@
   "АЗ-099_1,93.jpg",
   "АЗ-100_2,67.jpg",
   "АЗ-101_1,66.jpg",
-  "АЗ-102_1,75.jpg",
-  "АЗр-098_7,24.jpg"
+  "АЗ-102_1,75.jpg"
 ];
     const gallery = document.getElementById("gallery");
 
     imageFiles.forEach(file => {
-      const name = file.split('/').pop().replace(/\.[^/.]+$/, "");
-      const src = `images/каменка/${file}`;
+  const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
+  const displayName = rawName.replace(/[_ ]/, '<br>'); // Заменяет первое вхождение _ или пробела
+  const src = `images/каменка/${file}`;
 
-      const item = document.createElement("div");
-      item.className = "item";
-      item.innerHTML = `
-        <img src="${src}" alt="${name}" onclick="openModal(this.src)" />
-        <p>${name}</p>
-      `;
-      gallery.appendChild(item);
-    });
+  const item = document.createElement("div");
+  item.className = "item";
+  item.innerHTML = `
+    <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
+    <p>${displayName}</p>
+  `;
+  gallery.appendChild(item);
+});
+
 
     function openModal(src) {
       document.getElementById("modal-img").src = src;

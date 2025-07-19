@@ -548,17 +548,19 @@
     const gallery = document.getElementById("gallery");
 
     imageFiles.forEach(file => {
-      const name = file.split('/').pop().replace(/\.[^/.]+$/, "");
-      const src = `images/${file}`;
+  const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
+  const displayName = rawName.replace(/[_ ]/, '<br>'); // Заменяет первое вхождение _ или пробела
+  const src = `images/${file}`;
 
-      const item = document.createElement("div");
-      item.className = "item";
-      item.innerHTML = `
-        <img src="${src}" alt="${name}" onclick="openModal(this.src)" />
-        <p>${name}</p>
-      `;
-      gallery.appendChild(item);
-    });
+  const item = document.createElement("div");
+  item.className = "item";
+  item.innerHTML = `
+    <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
+    <p>${displayName}</p>
+  `;
+  gallery.appendChild(item);
+});
+
 
     function openModal(src) {
       document.getElementById("modal-img").src = src;

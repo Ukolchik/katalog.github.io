@@ -15,9 +15,16 @@ image_files = [
 # Сортируем по имени (можно убрать при необходимости)
 image_files.sort()
 
-# Пишем в формате JavaScript массива
+def transform_filename(name: str) -> str:
+    """Заменяет пробелы и подчёркивания на перенос строки."""
+    name_no_ext, ext = os.path.splitext(name)
+    transformed = name_no_ext.replace(' ', '<br>').replace('_', '<br>')
+    return f"{transformed}{ext}"
+
+# Печатаем как JS-массив
 print("const imageFiles = [")
 for i, filename in enumerate(image_files):
     comma = ',' if i < len(image_files) - 1 else ''
-    print(f'  "{filename}"{comma}')
+    transformed_name = transform_filename(filename)
+    print(f'  "{transformed_name}"{comma}')
 print("];")
