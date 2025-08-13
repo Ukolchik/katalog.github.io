@@ -1,7 +1,7 @@
 import os
 
 # Путь к папке с изображениями
-folder_path = 'images/каменка'  # например: r'C:\Users\Ivan\Desktop\картинки'
+folder_path = 'images'  # например: r'C:\Users\Ivan\Desktop\картинки'
 
 # Поддерживаемые расширения
 image_extensions = {'.png', '.jpg', '.jpeg', '.webp'}
@@ -18,7 +18,7 @@ image_files.sort()
 def transform_filename(name: str) -> str:
     """Заменяет пробелы и подчёркивания на перенос строки."""
     name_no_ext, ext = os.path.splitext(name)
-    transformed = name_no_ext.replace(' ', '<br>').replace('_', '<br>')
+    transformed = name_no_ext.replace(' ', ' ').replace('_', '_')
     return f"{transformed}{ext}"
 
 # Печатаем как JS-массив
