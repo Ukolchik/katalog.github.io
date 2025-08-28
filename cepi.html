@@ -5,82 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Цепи</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    #topBtn {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+      font-size: 24px;
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    #topBtn:hover {
+      background-color: #222;
+    }
+  </style>
 </head>
 <body>
+
   <header>
     <h1>Каталог</h1>
     <a href="index.html" class="back-link">← На главную</a>
-    <p>
-        Тел. +7 (910) 985-11-85<br>
-    </p>
+    <p>Тел. +7 (910) 985-11-85</p>
   </header>
-  <main class="gallery">
-    <div class="item">
-      <img src="images/А-001.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>тут цепи</p>
-    </div>
-    <div class="item">
-      <img src="images/А-002.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>А-002</p>
-    </div>
-    <div class="item">
-      <img src="images/А-003.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-004.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-005.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-006.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-007.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-002.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <div class="item">
-      <img src="images/А-002.png" alt="Товар 1" onclick="openModal(this.src)" />
-      <p>Товар 1</p>
-    </div>
-    <!-- добавь остальные товары по этой же структуре -->
-  </main>
+
+  <main class="gallery" id="gallery"></main>
 
   <!-- Модальное окно -->
   <div id="modal" class="modal" onclick="closeModal()">
-    <span class="close">&times;</span>
+    <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modal-img" />
   </div>
 
+  <!-- Кнопка "Наверх" -->
+  <button onclick="scrollToTop()" id="topBtn" title="Наверх">↑</button>
+
+  <div class="order-info">
+    Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами:<br>
+    <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a><br>
+    <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a><br>
+    <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
+  </div>
+
   <script>
+    const imageFiles = [
+      "Колос_0,4.jpeg",
+      "Лав граненая_0,4 0,5.jpeg",
+      "Нонна граненый_0,4 0,5 0,6 0,7.jpeg",
+      "Панцирь граненый_0,4 0,5 0,6 0,7 0,8 1 1,2.jpeg",
+      "Панцирь двойной граненый_0,8.jpeg",
+      "Панцирь плоский граненый_0,6 0,7 0,8 0,9  1 1,2 1,5.jpg",
+      "Ромб двойной граненый_0,4 0,5 0,6 0,7 0,8 0,9.jpeg",
+      "Ромб тройной граненый_0,4 0,5 0,6 0,7.jpeg",
+      "Сингапур_0,3 0,4 0,5.jpeg",
+      "Улитка_0,6 0,8.jpeg",
+      "Якорь граненый_0,5 0,6 0,7 0,8 1 1,2.jpeg",
+      "Якорь плоский_0,5 0,6 0,7.jpeg"
+];
+    const gallery = document.getElementById("gallery");
+
+    imageFiles.forEach(file => {
+  const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
+  const displayName = rawName.replace(/[_]/, '<br>'); // Заменяет первое вхождение _ или пробела
+  const src = `images/цепи/${file}`;
+
+  const item = document.createElement("div");
+  item.className = "item";
+  item.innerHTML = `
+    <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
+    <p>${displayName}</p>
+  `;
+  gallery.appendChild(item);
+});
+
+
     function openModal(src) {
-      document.getElementById("modal").style.display = "block";
       document.getElementById("modal-img").src = src;
+      document.getElementById("modal").style.display = "flex";
     }
 
     function closeModal() {
       document.getElementById("modal").style.display = "none";
     }
-  </script>
-  <div class="order-info">
-    Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами
-    <br>
-    <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a>
-    <br>
-    <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a>
-    <br>
-    <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
-  </div>
-</body>
-<footer>
 
-</footer>
+    window.onscroll = function () {
+      const btn = document.getElementById("topBtn");
+      btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
+    };
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
 </html>
