@@ -21,38 +21,77 @@
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
-    #topBtn:hover {
-      background-color: #222;
+    #topBtn:hover { background-color: #222; }
+
+    .add-to-cart {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: #013077;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: 0.3s;
+    }
+    .add-to-cart:hover { background-color: #005fa3; }
+    .add-to-cart:disabled { background-color: #2ecc71; cursor: default; }
+
+    .item { position: relative; }
+
+    .cart-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 28px;
+    }
+    .cart-count {
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 8px;
+      font-size: 14px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Каталог</h1>
-    <a href="index.html" class="back-link">← На главную</a>
-    <p>Тел. +7 (910) 985-11-85</p>
-  </header>
+<header>
+  <h1>Каталог</h1>
+  <a href="index.html" class="back-link">← На главную</a>
+  <p>Тел. +7 (910) 985-11-85</p>
 
-  <main class="gallery" id="gallery"></main>
-
-  <!-- Модальное окно -->
-  <div id="modal" class="modal" onclick="closeModal()">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modal-img" />
+  <div class="cart-icon" onclick="location.href='cart.html'">
+    🛒
+    <span id="cart-count" class="cart-count">0</span>
   </div>
+</header>
 
-  <!-- Кнопка "Наверх" -->
-  <button onclick="scrollToTop()" id="topBtn" title="Наверх">↑</button>
+<main class="gallery" id="gallery"></main>
 
-  <div class="order-info">
-    Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами:<br>
-    <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a><br>
-    <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a><br>
-    <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
-  </div>
+<div id="modal" class="modal" onclick="closeModal()">
+  <span class="close" onclick="closeModal()">&times;</span>
+  <img class="modal-content" id="modal-img" />
+</div>
 
-  <script>
+<button onclick="scrollToTop()" id="topBtn" title="Наверх">↑</button>
+
+<div class="order-info">
+  Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами:<br>
+  <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a><br>
+  <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a><br>
+  <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
+</div>
+
+<script>
     const imageFiles = [
   "А-001_12,60.jpg",
   "А-002 3,61.jpg",
@@ -545,11 +584,38 @@
   "А-489_2,74.jpg"
 ];
 
-    const gallery = document.getElementById("gallery");
+   const gallery = document.getElementById("gallery");
 
-    imageFiles.forEach(file => {
+// Работа с корзиной
+function getCart() { return JSON.parse(localStorage.getItem("cart")) || []; }
+function saveCart(cart) { localStorage.setItem("cart", JSON.stringify(cart)); }
+function updateCartCount() { document.getElementById("cart-count").textContent = getCart().length; }
+function addToCart(button, productName) {
+  const cart = getCart();
+  if (!cart.find(item => item.name === productName)) {
+    cart.push({ name: productName, qty: 1 });
+    saveCart(cart);
+    updateCartCount();
+    button.textContent = "✓";
+    button.disabled = true;
+  }
+}
+function markAddedProducts() {
+  const cart = getCart();
+  document.querySelectorAll(".add-to-cart").forEach(btn => {
+    const productName = btn.getAttribute("data-name");
+    if (cart.some(item => item.name === productName)) {
+      btn.textContent = "✓";
+      btn.disabled = true;
+    }
+  });
+}
+
+// Создание галереи
+imageFiles.forEach(file => {
   const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
-  const displayName = rawName.replace(/[_ ]/, '<br>'); // Заменяет первое вхождение _ или пробела
+  const displayName = rawName.replace(/[_ ]/, '<br>');
+  const cleanName = displayName.replace(/<br>/g, ' ');
   const src = `images/${file}`;
 
   const item = document.createElement("div");
@@ -557,29 +623,28 @@
   item.innerHTML = `
     <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
     <p>${displayName}</p>
+    <button class="add-to-cart" data-name="${cleanName}" onclick="addToCart(this, '${cleanName}')">+</button>
   `;
   gallery.appendChild(item);
 });
 
+updateCartCount();
+markAddedProducts();
 
-    function openModal(src) {
-      document.getElementById("modal-img").src = src;
-      document.getElementById("modal").style.display = "flex";
-    }
+// Модалка
+function openModal(src) {
+  document.getElementById("modal-img").src = src;
+  document.getElementById("modal").style.display = "flex";
+}
+function closeModal() { document.getElementById("modal").style.display = "none"; }
 
-    function closeModal() {
-      document.getElementById("modal").style.display = "none";
-    }
-
-    window.onscroll = function () {
-      const btn = document.getElementById("topBtn");
-      btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
-    };
-
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  </script>
+// Кнопка "Наверх"
+window.onscroll = function () {
+  const btn = document.getElementById("topBtn");
+  btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
+};
+function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+</script>
 
 </body>
 </html>
