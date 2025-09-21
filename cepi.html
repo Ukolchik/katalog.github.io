@@ -21,40 +21,28 @@
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
-    #topBtn:hover {
-      background-color: #222;
-    }
+    #topBtn:hover { background-color: #222; }
 
-    /* кнопка добавления в корзину */
     .add-to-cart {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
+      display: inline-block;
+      margin-top: 6px;
       background-color: #013077;
       color: white;
       border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      font-size: 20px;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 16px;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       transition: 0.3s;
     }
-    .add-to-cart:hover {
-      background-color: #005fa3;
-    }
+    .add-to-cart:hover { background-color: #005fa3; }
+    .add-to-cart:disabled { background-color: #2ecc71; cursor: default; }
 
-    .add-to-cart:disabled {
-      background-color: #2ecc71; /* зелёная галочка */
-      cursor: default;
-    }
+    .item { text-align: center; margin-bottom: 20px; }
+    .item img { max-width: 100%; height: auto; border-radius: 6px; }
+    .item p { margin: 8px 0 4px; }
 
-    .item {
-      position: relative;
-    }
-
-    /* корзина в хедере */
     .cart-icon {
       position: absolute;
       top: 20px;
@@ -62,7 +50,6 @@
       cursor: pointer;
       font-size: 28px;
     }
-
     .cart-count {
       background-color: red;
       color: white;
@@ -76,131 +63,109 @@
   </style>
 </head>
 <body>
-
-  <header>
-    <h1>Каталог</h1>
-    <a href="index.html" class="back-link">← На главную</a>
-    <p>Тел. +7 (910) 985-11-85</p>
-
-    <!-- корзина -->
-    <div class="cart-icon" onclick="location.href='cart.html'">
-      🛒
-      <span id="cart-count" class="cart-count">0</span>
-    </div>
-  </header>
-
-  <main class="gallery" id="gallery"></main>
-
-  <!-- Модальное окно -->
-  <div id="modal" class="modal" onclick="closeModal()">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modal-img" />
+<header>
+  <h1>Каталог</h1>
+  <a href="index.html" class="back-link">← На главную</a>
+  <p>Тел. +7 (910) 985-11-85</p>
+  <div class="cart-icon" onclick="location.href='cart.html'">
+    🛒<span id="cart-count" class="cart-count">0</span>
   </div>
+</header>
 
-  <!-- Кнопка "Наверх" -->
-  <button onclick="scrollToTop()" id="topBtn" title="Наверх">↑</button>
+<main class="gallery" id="gallery"></main>
 
-  <div class="order-info">
-    Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами:<br>
-    <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a><br>
-    <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a><br>
-    <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
-  </div>
+<div id="modal" class="modal" onclick="closeModal()">
+  <span class="close" onclick="closeModal()">&times;</span>
+  <img class="modal-content" id="modal-img" />
+</div>
 
-  <script>
-    const imageFiles = [
-      "Бисмарк граненый_0,5-1.jpeg",
-      "Колос_0,4.jpeg",
-      "Кордовая двойная_0,4.jpeg",
-      "Кордовая тройная_0,35 0,5.jpeg",
-      "Лав граненая_0,4 0,5.jpeg",
-      "Нонна граненый_0,4-0,7.jpeg",
-      "Панцирь граненый_0,4-1,2.jpeg",
-      "Панцирь двойной граненый_0,8.jpeg",
-      "Панцирь плоский граненый_0,6-1,5.jpg",
-      "Ромб двойной граненый_0,4-0,9.jpeg",
-      "Ромб тройной граненый_0,4-0,7.jpeg",
-      "Сингапур_0,3 0,4 0,5.jpeg",
-      "Тигровый глаз_0,6.jpeg",
-      "Улитка_0,6 0,8.jpeg",
-      "Якорь граненый_0,5-1,2.jpeg",
-      "Якорь плоский_0,5 0,6 0,7.jpeg"
-    ];
+<button onclick="scrollToTop()" id="topBtn" title="Наверх">↑</button>
 
-    const gallery = document.getElementById("gallery");
+<div class="order-info">
+  Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами:<br>
+  <b>Телефон:</b> <a href="tel:+79109851185">+7 (910) 985-11-85</a><br>
+  <b>WhatsApp / Telegram:</b> <a href="https://wa.me/79109851185" target="_blank">+7 (910) 985-11-85</a><br>
+  <b>E-mail:</b> <a href="mailto:artos-iv@mail.ru">artos-iv@mail.ru</a>
+</div>
 
-    imageFiles.forEach(file => {
-      const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
-      const displayName = rawName.replace(/[_]/, '<br>');
-      const src = `images/цепи/${file}`;
-      const cleanName = displayName.replace(/<br>/g, ' ');
+<script>
+  const chains = [
+    { file: "Бисмарк граненый_0,5-1.jpeg", name: "Бисмарк граненый", widths: [0.5, 0.7, 1] },
+    { file: "Колос_0,4.jpeg", name: "Колос", widths: [0.4] },
+    { file: "Кордовая двойная_0,4.jpeg", name: "Кордовая двойная", widths: [0.4] },
+    { file: "Кордовая тройная_0,35 0,5.jpeg", name: "Кордовая тройная", widths: [0.35, 0.5] },
+    { file: "Лав граненая_0,4 0,5.jpeg", name: "Лав граненая", widths: [0.4, 0.5] },
+    { file: "Нонна граненый_0,4-0,7.jpeg", name: "Нонна граненый", widths: [0.4, 0.7] },
+    { file: "Панцирь граненый_0,4-1,2.jpeg", name: "Панцирь граненый", widths: [0.4, 1.2] },
+    { file: "Панцирь двойной граненый_0,8.jpeg", name: "Панцирь двойной граненый", widths: [0.8] },
+    { file: "Панцирь плоский граненый_0,6-1,5.jpg", name: "Панцирь плоский граненый", widths: [0.6, 1.5] },
+    { file: "Ромб двойной граненый_0,4-0,9.jpeg", name: "Ромб двойной граненый", widths: [0.4, 0.9] },
+    { file: "Ромб тройной граненый_0,4-0,7.jpeg", name: "Ромб тройной граненый", widths: [0.4, 0.7] },
+    { file: "Сингапур_0,3 0,4 0,5.jpeg", name: "Сингапур", widths: [0.3, 0.4, 0.5] },
+    { file: "Тигровый глаз_0,6.jpeg", name: "Тигровый глаз", widths: [0.6] },
+    { file: "Улитка_0,6 0,8.jpeg", name: "Улитка", widths: [0.6, 0.8] },
+    { file: "Якорь граненый_0,5-1,2.jpeg", name: "Якорь граненый", widths: [0.5, 1.2] },
+    { file: "Якорь плоский_0,5 0,6 0,7.jpeg", name: "Якорь плоский", widths: [0.5,0.6,0.7] }
+  ];
 
-      const item = document.createElement("div");
-      item.className = "item";
-      item.innerHTML = `
-        <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
-        <p>${displayName}</p>
-        <button class="add-to-cart" onclick="addToCart(this, '${cleanName}')">+</button>
-      `;
-      gallery.appendChild(item);
+  const gallery = document.getElementById("gallery");
+
+  function getCart() { return JSON.parse(localStorage.getItem("cart")) || []; }
+  function saveCart(cart) { localStorage.setItem("cart", JSON.stringify(cart)); }
+  function updateCartCount() { document.getElementById("cart-count").textContent = getCart().length; }
+
+  function addToCart(button, chain) {
+    const cart = getCart();
+    cart.push({
+      name: chain.name,
+      type: 'chain',
+      length: 40,
+      width: chain.widths[0],
+      availableWidths: chain.widths,
+      qty: 1
     });
-
-    function openModal(src) {
-      document.getElementById("modal-img").src = src;
-      document.getElementById("modal").style.display = "flex";
-    }
-
-    function closeModal() {
-      document.getElementById("modal").style.display = "none";
-    }
-
-    window.onscroll = function () {
-      const btn = document.getElementById("topBtn");
-      btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
-    };
-
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // добавление товара с qty = 1
-    function addToCart(button, productName) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-      // ищем товар
-      const existing = cart.find(item => item.name === productName);
-
-      if (!existing) {
-        cart.push({ name: productName, qty: 1 });
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartCount();
-
-        // меняем кнопку на галочку
-        button.textContent = "✓";
-        button.disabled = true;
-      }
-    }
-
-    // обновление счетчика
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      document.getElementById("cart-count").textContent = cart.length;
-    }
-
-    // при загрузке — отмечаем добавленные товары
-    function markAddedProducts() {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      document.querySelectorAll(".add-to-cart").forEach(btn => {
-        const productName = btn.getAttribute("onclick").match(/'(.*?)'/)[1];
-        if (cart.some(item => item.name === productName)) {
-          btn.textContent = "✓";
-          btn.disabled = true;
-        }
-      });
-    }
-
+    saveCart(cart);
     updateCartCount();
-    markAddedProducts();
-  </script>
+    button.textContent = "✓";
+    button.disabled = true;
+  }
+
+  function markAddedProducts() {
+    const cart = getCart();
+    document.querySelectorAll(".add-to-cart").forEach(btn => {
+      const productName = btn.getAttribute("data-name");
+      if(cart.some(item => item.name === productName)){
+        btn.textContent = "✓";
+        btn.disabled = true;
+      }
+    });
+  }
+
+  chains.forEach(chain => {
+    const rawName = chain.file.split('/').pop().replace(/\.[^/.]+$/, "");
+    const displayName = rawName.replace(/[_]/, '<br>');
+    const src = `images/цепи/${chain.file}`;
+
+    const item = document.createElement("div");
+    item.className = "item";
+    item.innerHTML = `
+      <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
+      <p>${displayName}</p>
+      <button class="add-to-cart" data-name="${chain.name}" onclick='addToCart(this, ${JSON.stringify(chain)})'>Добавить</button>
+    `;
+    gallery.appendChild(item);
+  });
+
+  function openModal(src){ document.getElementById("modal-img").src = src; document.getElementById("modal").style.display = "flex"; }
+  function closeModal(){ document.getElementById("modal").style.display = "none"; }
+
+  window.onscroll = function(){
+    document.getElementById("topBtn").style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
+  }
+  function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
+  updateCartCount();
+  markAddedProducts();
+</script>
 </body>
 </html>

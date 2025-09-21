@@ -23,18 +23,16 @@
     }
     #topBtn:hover { background-color: #222; }
 
-    /* кнопка добавления в корзину */
+    /* кнопка добавления в корзину под текстом */
     .add-to-cart {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
+      display: inline-block;
+      margin-top: 6px;
       background-color: #013077;
       color: white;
       border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      font-size: 20px;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 16px;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       transition: 0.3s;
@@ -42,7 +40,20 @@
     .add-to-cart:hover { background-color: #005fa3; }
     .add-to-cart:disabled { background-color: #2ecc71; cursor: default; }
 
-    .item { position: relative; }
+    .item {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .item p {
+      margin: 8px 0 4px;
+    }
 
     /* корзина в хедере */
     .cart-icon {
@@ -52,6 +63,7 @@
       cursor: pointer;
       font-size: 28px;
     }
+
     .cart-count {
       background-color: red;
       color: white;
@@ -65,13 +77,10 @@
   </style>
 </head>
 <body>
-
 <header>
   <h1>Каталог</h1>
   <a href="index.html" class="back-link">← На главную</a>
   <p>Тел. +7 (910) 985-11-85</p>
-
-  <!-- корзина -->
   <div class="cart-icon" onclick="location.href='cart.html'">
     🛒
     <span id="cart-count" class="cart-count">0</span>
@@ -97,177 +106,85 @@
 </div>
 
 <script>
-    const imageFiles = [
-  "АЗ-001ц_2,39.jpg",
-  "АЗ-002ц_2,42.jpg",
-  "АЗ-003ц_1,51.jpg",
-  "АЗ-004ц_1,79.jpg",
-  "АЗ-005_1,52.jpg",
-  "АЗ-006_1,13.jpg",
-  "АЗ-007_0,98.jpg",
-  "АЗ-008_1,27.jpg",
-  "АЗ-009_3,79.jpg",
-  "АЗ-010_0,90.jpg",
-  "АЗ-011_3,02.jpg",
-  "АЗ-012_0,92.jpg",
-  "АЗ-013_1,88.jpg",
-  "АЗ-014_1,65.jpg",
-  "АЗ-015_2,35.jpg",
-  "АЗ-016_2,30.jpg",
-  "АЗ-017_1,04.jpg",
-  "АЗ-018_1,59.jpg",
-  "АЗ-019_1,25.jpg",
-  "АЗ-020_0,62.jpg",
-  "АЗ-021_0,75.jpg",
-  "АЗ-022_1,68.jpg",
-  "АЗ-023_1,15.jpg",
-  "АЗ-024_0,80.jpg",
-  "АЗ-025_0,85.jpg",
-  "АЗ-026_1,71.jpg",
-  "АЗ-027_1,21.jpg",
-  "АЗ-028_0,79.jpg",
-  "АЗ-029_2,00.jpg",
-  "АЗ-030_2,65.jpg",
-  "АЗ-031_0,95.jpg",
-  "АЗ-032_2,15.jpg",
-  "АЗ-033_0,89.jpg",
-  "АЗ-034_1,44.jpg",
-  "АЗ-035_3,42.jpg",
-  "АЗ-036_2,18.jpg",
-  "АЗ-037_1,25.jpg",
-  "АЗ-038_1,76.jpg",
-  "АЗ-039_1,19.jpg",
-  "АЗ-040_3,20.jpg",
-  "АЗ-041_3,47.jpg",
-  "АЗ-042_2,54.jpg",
-  "АЗ-042_3,17.jpg",
-  "АЗ-043_3,30.jpg",
-  "АЗ-044_2,61.jpg",
-  "АЗ-045_2,47.jpg",
-  "АЗ-046_2,20.jpg",
-  "АЗ-047_1,46.jpg",
-  "АЗ-048_2,87.jpg",
-  "АЗ-049_1,95.jpg",
-  "АЗ-050_1,13.jpg",
-  "АЗ-051_1,39.jpg",
-  "АЗ-052_1,59.jpg",
-  "АЗ-053_1,76.jpg",
-  "АЗ-054_1,24.jpg",
-  "АЗ-055_2,87.jpg",
-  "АЗ-056_2,05.jpg",
-  "АЗ-057_1,92.jpg",
-  "АЗ-058_1,68.jpg",
-  "АЗ-059_2,01.jpg",
-  "АЗ-060_2,12.jpg",
-  "АЗ-061_2,06.jpg",
-  "АЗ-062_2,22.jpg",
-  "АЗ-063_1,63.jpg",
-  "АЗ-064_2,18.jpg",
-  "АЗ-065_1,09.jpg",
-  "АЗ-066_4,42.jpg",
-  "АЗ-067_1,37.jpg",
-  "АЗ-068_7,49.jpg",
-  "АЗ-069_2,84.jpg",
-  "АЗ-070_2,25.jpg",
-  "АЗ-071_0,73.jpg",
-  "АЗ-072_0,40.jpg",
-  "АЗ-073_0,60.jpg",
-  "АЗ-074_1,43.jpg",
-  "АЗ-075_0,57.jpg",
-  "АЗ-076_0,58.jpg",
-  "АЗ-077_2,85.jpg",
-  "АЗ-078_5,19.jpg",
-  "АЗ-079_3,25.jpg",
-  "АЗ-080_1,87.jpg",
-  "АЗ-081_1,15.jpg",
-  "АЗ-082_2,45.jpg",
-  "АЗ-083_2,02.jpg",
-  "АЗ-084_2,49.jpg",
-  "АЗ-085_2,12.jpg",
-  "АЗ-086_3,18.jpg",
-  "АЗ-087_3,76.jpg",
-  "АЗ-088_1,98.jpg",
-  "АЗ-090_1,19.jpg",
-  "АЗ-091_2,60.jpg",
-  "АЗ-092_2,14.jpg",
-  "АЗ-093_2,90.jpg",
-  "АЗ-094_2,62.jpg",
-  "АЗ-095_2,05.jpg",
-  "АЗ-096_3,20.jpg",
-  "АЗ-097_2,18.jpg",
-  "АЗ-098_7,24.jpg",
-  "АЗ-099_1,93.jpg",
-  "АЗ-100_2,67.jpg",
-  "АЗ-101_1,66.jpg",
-  "АЗ-102_1,75.jpg"
-];
-    const gallery = document.getElementById("gallery");
+  const imageFiles = [
+    "АЗ-001ц_2,39.jpg","АЗ-002ц_2,42.jpg","АЗ-003ц_1,51.jpg","АЗ-004ц_1,79.jpg","АЗ-005_1,52.jpg",
+    "АЗ-006_1,13.jpg","АЗ-007_0,98.jpg","АЗ-008_1,27.jpg","АЗ-009_3,79.jpg","АЗ-010_0,90.jpg",
+    "АЗ-011_3,02.jpg","АЗ-012_0,92.jpg","АЗ-013_1,88.jpg","АЗ-014_1,65.jpg","АЗ-015_2,35.jpg",
+    "АЗ-016_2,30.jpg","АЗ-017_1,04.jpg","АЗ-018_1,59.jpg","АЗ-019_1,25.jpg","АЗ-020_0,62.jpg",
+    "АЗ-021_0,75.jpg","АЗ-022_1,68.jpg","АЗ-023_1,15.jpg","АЗ-024_0,80.jpg","АЗ-025_0,85.jpg",
+    "АЗ-026_1,71.jpg","АЗ-027_1,21.jpg","АЗ-028_0,79.jpg","АЗ-029_2,00.jpg","АЗ-030_2,65.jpg",
+    "АЗ-031_0,95.jpg","АЗ-032_2,15.jpg","АЗ-033_0,89.jpg","АЗ-034_1,44.jpg","АЗ-035_3,42.jpg",
+    "АЗ-036_2,18.jpg","АЗ-037_1,25.jpg","АЗ-038_1,76.jpg","АЗ-039_1,19.jpg","АЗ-040_3,20.jpg",
+    "АЗ-041_3,47.jpg","АЗ-042_2,54.jpg","АЗ-042_3,17.jpg","АЗ-043_3,30.jpg","АЗ-044_2,61.jpg",
+    "АЗ-045_2,47.jpg","АЗ-046_2,20.jpg","АЗ-047_1,46.jpg","АЗ-048_2,87.jpg","АЗ-049_1,95.jpg",
+    "АЗ-050_1,13.jpg","АЗ-051_1,39.jpg","АЗ-052_1,59.jpg","АЗ-053_1,76.jpg","АЗ-054_1,24.jpg",
+    "АЗ-055_2,87.jpg","АЗ-056_2,05.jpg","АЗ-057_1,92.jpg","АЗ-058_1,68.jpg","АЗ-059_2,01.jpg",
+    "АЗ-060_2,12.jpg","АЗ-061_2,06.jpg","АЗ-062_2,22.jpg","АЗ-063_1,63.jpg","АЗ-064_2,18.jpg",
+    "АЗ-065_1,09.jpg","АЗ-066_4,42.jpg","АЗ-067_1,37.jpg","АЗ-068_7,49.jpg","АЗ-069_2,84.jpg",
+    "АЗ-070_2,25.jpg","АЗ-071_0,73.jpg","АЗ-072_0,40.jpg","АЗ-073_0,60.jpg","АЗ-074_1,43.jpg",
+    "АЗ-075_0,57.jpg","АЗ-076_0,58.jpg","АЗ-077_2,85.jpg","АЗ-078_5,19.jpg","АЗ-079_3,25.jpg",
+    "АЗ-080_1,87.jpg","АЗ-081_1,15.jpg","АЗ-082_2,45.jpg","АЗ-083_2,02.jpg","АЗ-084_2,49.jpg",
+    "АЗ-085_2,12.jpg","АЗ-086_3,18.jpg","АЗ-087_3,76.jpg","АЗ-088_1,98.jpg","АЗ-090_1,19.jpg",
+    "АЗ-091_2,60.jpg","АЗ-092_2,14.jpg","АЗ-093_2,90.jpg","АЗ-094_2,62.jpg","АЗ-095_2,05.jpg",
+    "АЗ-096_3,20.jpg","АЗ-097_2,18.jpg","АЗ-098_7,24.jpg","АЗ-099_1,93.jpg","АЗ-100_2,67.jpg",
+    "АЗ-101_1,66.jpg","АЗ-102_1,75.jpg"
+  ];
 
-// Загрузка корзины
-function getCart() { return JSON.parse(localStorage.getItem("cart")) || []; }
-function saveCart(cart) { localStorage.setItem("cart", JSON.stringify(cart)); }
-function updateCartCount() {
-  document.getElementById("cart-count").textContent = getCart().length;
-}
+  const gallery = document.getElementById("gallery");
 
-// Добавление товара
-function addToCart(button, productName) {
-  const cart = getCart();
-  if (!cart.find(item => item.name === productName)) {
-    cart.push({ name: productName, qty: 1 });
-    saveCart(cart);
-    updateCartCount();
-    button.textContent = "✓";
-    button.disabled = true;
-  }
-}
+  function getCart() { return JSON.parse(localStorage.getItem("cart")) || []; }
+  function saveCart(cart) { localStorage.setItem("cart", JSON.stringify(cart)); }
+  function updateCartCount() { document.getElementById("cart-count").textContent = getCart().length; }
 
-// Помечаем уже добавленные товары
-function markAddedProducts() {
-  const cart = getCart();
-  document.querySelectorAll(".add-to-cart").forEach(btn => {
-    const productName = btn.getAttribute("data-name");
-    if (cart.some(item => item.name === productName)) {
-      btn.textContent = "✓";
-      btn.disabled = true;
+  function addToCart(button, productName) {
+    const cart = getCart();
+    if (!cart.find(item => item.name === productName)) {
+      cart.push({ name: productName, qty: 1 });
+      saveCart(cart);
+      updateCartCount();
+      button.textContent = "✓";
+      button.disabled = true;
     }
+  }
+
+  function markAddedProducts() {
+    const cart = getCart();
+    document.querySelectorAll(".add-to-cart").forEach(btn => {
+      const productName = btn.getAttribute("data-name");
+      if (cart.some(item => item.name === productName)) {
+        btn.textContent = "✓";
+        btn.disabled = true;
+      }
+    });
+  }
+
+  imageFiles.forEach(file => {
+    const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
+    const displayName = rawName.replace(/[_ ]/, '<br>');
+    const cleanName = displayName.replace(/<br>/g, ' ');
+    const src = `images/каменка/${file}`;
+
+    const item = document.createElement("div");
+    item.className = "item";
+    item.innerHTML = `
+      <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
+      <p>${displayName}</p>
+      <button class="add-to-cart" data-name="${cleanName}" onclick="addToCart(this, '${cleanName}')">Добавить</button>
+    `;
+    gallery.appendChild(item);
   });
-}
 
-// Создание галереи
-imageFiles.forEach(file => {
-  const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
-  const displayName = rawName.replace(/[_ ]/, '<br>');
-  const cleanName = displayName.replace(/<br>/g, ' ');
-  const src = `images/каменка/${file}`;
+  function openModal(src) { document.getElementById("modal-img").src = src; document.getElementById("modal").style.display = "flex"; }
+  function closeModal() { document.getElementById("modal").style.display = "none"; }
 
-  const item = document.createElement("div");
-  item.className = "item";
-  item.innerHTML = `
-    <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
-    <p>${displayName}</p>
-    <button class="add-to-cart" data-name="${cleanName}" onclick="addToCart(this, '${cleanName}')">+</button>
-  `;
-  gallery.appendChild(item);
-});
+  window.onscroll = function () {
+    const btn = document.getElementById("topBtn");
+    btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
+  };
+  function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-updateCartCount();
-markAddedProducts();
-
-// Модалка
-function openModal(src) {
-  document.getElementById("modal-img").src = src;
-  document.getElementById("modal").style.display = "flex";
-}
-function closeModal() { document.getElementById("modal").style.display = "none"; }
-
-// Кнопка "Наверх"
-window.onscroll = function () {
-  const btn = document.getElementById("topBtn");
-  btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
-};
-function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  updateCartCount();
+  markAddedProducts();
 </script>
-
 </body>
 </html>

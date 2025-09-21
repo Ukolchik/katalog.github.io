@@ -23,17 +23,16 @@
     }
     #topBtn:hover { background-color: #222; }
 
+    /* кнопка добавления в корзину под текстом */
     .add-to-cart {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
+      display: inline-block;
+      margin-top: 6px;
       background-color: #013077;
       color: white;
       border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      font-size: 20px;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 16px;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       transition: 0.3s;
@@ -41,8 +40,22 @@
     .add-to-cart:hover { background-color: #005fa3; }
     .add-to-cart:disabled { background-color: #2ecc71; cursor: default; }
 
-    .item { position: relative; }
+    .item {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
+    .item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .item p {
+      margin: 8px 0 4px;
+    }
+
+    /* корзина в хедере */
     .cart-icon {
       position: absolute;
       top: 20px;
@@ -50,6 +63,7 @@
       cursor: pointer;
       font-size: 28px;
     }
+
     .cart-count {
       background-color: red;
       color: white;
@@ -92,7 +106,7 @@
 </div>
 
 <script>
-    const imageFiles = [
+const imageFiles = [
   "А-001_12,60.jpg",
   "А-002 3,61.jpg",
   "А-003 9,08.jpg",
@@ -584,7 +598,7 @@
   "А-489_2,74.jpg"
 ];
 
-   const gallery = document.getElementById("gallery");
+const gallery = document.getElementById("gallery");
 
 // Работа с корзиной
 function getCart() { return JSON.parse(localStorage.getItem("cart")) || []; }
@@ -623,7 +637,7 @@ imageFiles.forEach(file => {
   item.innerHTML = `
     <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
     <p>${displayName}</p>
-    <button class="add-to-cart" data-name="${cleanName}" onclick="addToCart(this, '${cleanName}')">+</button>
+    <button class="add-to-cart" data-name="${cleanName}" onclick="addToCart(this, '${cleanName}')">Добавить</button>
   `;
   gallery.appendChild(item);
 });

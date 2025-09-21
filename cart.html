@@ -5,120 +5,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Корзина</title>
   <link rel="stylesheet" href="style.css">
-  
 </head>
 <body>
-  <header>
-    <h1>Корзина</h1>
-    <a href="index.html" class="back-link">← На главную</a>
-  </header>
+<header>
+  <h1>Корзина</h1>
+  <a href="index.html" class="back-link">← На главную</a>
+</header>
 
-  <main class="cart-container">
-    <h2>Ваши товары</h2>
-    <table id="cart-table">
-      <thead>
-        <tr>
-          <th>Товар</th>
-          <th>Количество</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+<main class="cart-container">
+  <h2>Ваши товары</h2>
+  <table id="cart-table">
+    <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Параметры</th>
+        <th>Количество</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <h2>Оформление заказа</h2>
-    <form id="order-form">
-      <div class="form-group">
-        <label for="name">Имя</label>
-        <input type="text" id="name" required>
-      </div>
-      <div class="form-group">
-        <label for="phone">Телефон</label>
-        <input type="tel" id="phone" required>
-      </div>
-      <div class="form-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" required>
-      </div>
-      <button type="submit" class="btn-submit">Отправить заказ</button>
-    </form>
-  </main>
+  <h2>Оформление заказа</h2>
+  <form id="order-form">
+    <div class="form-group">
+      <label for="name">Имя</label>
+      <input type="text" id="name" required>
+    </div>
+    <div class="form-group">
+      <label for="phone">Телефон</label>
+      <input type="tel" id="phone" required>
+    </div>
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" required>
+    </div>
+    <button type="submit" class="btn-submit">Отправить заказ</button>
+  </form>
+</main>
 
-  <!-- EmailJS v3 -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script>
-    // ⚡ Вставьте свои данные EmailJS
-    const SERVICE_ID = "service_j4uw3iu";
-    const TEMPLATE_ID = "template_966t464";
-    const PUBLIC_KEY = "dcPnlrnIbilT3UWlS";
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  const SERVICE_ID = "service_j4uw3iu";
+  const TEMPLATE_ID = "template_966t464";
+  const PUBLIC_KEY = "dcPnlrnIbilT3UWlS";
 
-    // Инициализация EmailJS
-    emailjs.init(PUBLIC_KEY);
+  emailjs.init(PUBLIC_KEY);
 
-    // Загрузка корзины
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const cartTableBody = document.querySelector("#cart-table tbody");
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartTableBody = document.querySelector("#cart-table tbody");
 
-    function renderCart() {
-      cartTableBody.innerHTML = "";
-      if (cart.length === 0) {
-        cartTableBody.innerHTML = `<tr><td colspan="2">Корзина пуста</td></tr>`;
-        return;
-      }
+  const chainLengths = [40,45,50,55,60,65,70];
 
-      cart.forEach((item, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td><input type="number" min="1" value="${item.qty}" data-index="${index}"></td>
-        `;
-        cartTableBody.appendChild(row);
-      });
-
-      // Обновление количества
-      document.querySelectorAll("#cart-table input").forEach(input => {
-        input.addEventListener("change", function() {
-          const idx = this.dataset.index;
-          cart[idx].qty = parseInt(this.value) || 1;
-          localStorage.setItem("cart", JSON.stringify(cart));
-        });
-      });
-    }
-    renderCart();
-
-    // Формируем список товаров для письма
-    function getCartHtml() {
-      if (cart.length === 0) return "<li>Корзина пуста</li>";
-      return cart.map(item => `<li>${item.name} — ${item.qty} шт.</li>`).join("");
+  function renderCart() {
+    cartTableBody.innerHTML = "";
+    if(cart.length === 0){
+      cartTableBody.innerHTML = `<tr><td colspan="3">Корзина пуста</td></tr>`;
+      return;
     }
 
-    // Отправка заказа
-    document.getElementById("order-form").addEventListener("submit", function(e) {
-      e.preventDefault();
+    cart.forEach((item, index) => {
+      const row = document.createElement("tr");
 
-      if (cart.length === 0) {
-        alert("Корзина пуста!");
-        return;
+      // Параметры для цепей
+      let paramsHtml = '';
+      if(item.type === 'chain') {
+        // Длина
+        const lengthSelect = `<select data-index="${index}" class="length-select">${chainLengths.map(l=>`<option value="${l}" ${l===item.length?'selected':''}>${l}</option>`).join('')}</select>`;
+        // Ширина
+        const widthSelect = `<select data-index="${index}" class="width-select">${item.availableWidths.map(w=>`<option value="${w}" ${w===item.width?'selected':''}>${w}</option>`).join('')}</select>`;
+        paramsHtml = `Длина: ${lengthSelect} мм, Ширина: ${widthSelect} мм`;
+      } else {
+        paramsHtml = '-';
       }
 
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-      const email = document.getElementById("email").value;
+      row.innerHTML = `
+        <td>${item.name}</td>
+        <td>${paramsHtml}</td>
+        <td><input type="number" min="1" value="${item.qty}" data-index="${index}"></td>
+      `;
+      cartTableBody.appendChild(row);
+    });
 
-      emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-        user_name: name,
-        user_email: email,
-        user_phone: phone,
-        cart_items: getCartHtml() // список <li>
-      })
-      .then(() => {
-        alert("Ваш заказ успешно отправлен! ✅");
-        localStorage.removeItem("cart");
-        window.location.reload();
-      })
-      .catch(err => {
-        alert("Ошибка при отправке заказа ❌ " + JSON.stringify(err));
+    // Слушатели изменений количества
+    document.querySelectorAll("#cart-table input[type='number']").forEach(input=>{
+      input.addEventListener("change", e=>{
+        const idx = e.target.dataset.index;
+        cart[idx].qty = parseInt(e.target.value) || 1;
+        saveCart();
       });
     });
-  </script>
+
+    // Слушатели изменений длины/ширины для цепей
+    document.querySelectorAll(".length-select").forEach(select=>{
+      select.addEventListener("change", e=>{
+        const idx = e.target.dataset.index;
+        cart[idx].length = parseInt(e.target.value);
+        saveCart();
+      });
+    });
+    document.querySelectorAll(".width-select").forEach(select=>{
+      select.addEventListener("change", e=>{
+        const idx = e.target.dataset.index;
+        cart[idx].width = parseFloat(e.target.value);
+        saveCart();
+      });
+    });
+  }
+
+  function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  function getCartHtml() {
+    if(cart.length === 0) return "<li>Корзина пуста</li>";
+    return cart.map(item=>{
+      if(item.type==='chain'){
+        return `<li>${item.name} — ${item.qty} шт., длина ${item.length} мм, ширина ${item.width} мм</li>`;
+      } else {
+        return `<li>${item.name} — ${item.qty} шт.</li>`;
+      }
+    }).join("");
+  }
+
+  document.getElementById("order-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    if(cart.length===0){ alert("Корзина пуста!"); return; }
+
+    const name = document.getElementById("name").value;
+    const phone = document.getElementById("phone").value;
+    const email = document.getElementById("email").value;
+
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+      user_name: name,
+      user_email: email,
+      user_phone: phone,
+      cart_items: getCartHtml()
+    })
+    .then(()=>{
+      alert("Ваш заказ успешно отправлен! ✅");
+      localStorage.removeItem("cart");
+      window.location.reload();
+    })
+    .catch(err=>{
+      alert("Ошибка при отправке заказа ❌ " + JSON.stringify(err));
+    });
+  });
+
+  renderCart();
+</script>
 </body>
 </html>
