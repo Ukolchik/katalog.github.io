@@ -194,3 +194,21 @@ header {
 .btn-submit:hover {
   background-color: #005fa3;
 }
+
+/* Кнопка очистки корзины */
+.btn-clear {
+  background-color: #e53935; /* красный */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.btn-clear:hover {
+  background-color: #c62828; /* тёмно-красный при наведении */
+}

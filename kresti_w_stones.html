@@ -23,34 +23,16 @@
     }
     #topBtn:hover { background-color: #222; }
 
-    /* кнопка добавления в корзину под текстом */
-    .add-to-cart {
-      display: inline-block;
-      margin-top: 6px;
-      background-color: #013077;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: 0.3s;
-    }
-    .add-to-cart:hover { background-color: #005fa3; }
-    .add-to-cart:disabled { background-color: #2ecc71; cursor: default; }
-
     .item {
       text-align: center;
       margin-bottom: 20px;
     }
-
     .item img {
       max-width: 100%;
       height: auto;
       border-radius: 6px;
+      cursor: pointer;
     }
-
     .item p {
       margin: 8px 0 4px;
     }
@@ -63,7 +45,6 @@
       cursor: pointer;
       font-size: 28px;
     }
-
     .cart-count {
       background-color: red;
       color: white;
@@ -74,6 +55,59 @@
       top: -10px;
       right: -10px;
     }
+
+    /* стили модального окна карточки */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      gap: 20px;
+      width: 600px;
+      max-width: 90%;
+      position: relative;
+    }
+    .modal-content img {
+      max-width: 250px;
+      border-radius: 8px;
+    }
+    .modal-content h2 { margin: 0 0 10px; }
+    .close {
+      position: absolute;
+      right: 15px; top: 10px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .actions {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .actions input {
+      width: 60px;
+      padding: 5px;
+      text-align: center;
+    }
+    .actions button {
+      padding: 8px 15px;
+      background: #013077;
+      border: none;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .actions button:hover { background: #005fa3; }
   </style>
 </head>
 <body>
@@ -89,10 +123,19 @@
 
 <main class="gallery" id="gallery"></main>
 
-<!-- Модальное окно -->
-<div id="modal" class="modal" onclick="closeModal()">
-  <span class="close" onclick="closeModal()">&times;</span>
-  <img class="modal-content" id="modal-img" />
+<!-- Модальное окно карточки товара -->
+<div id="productModal" class="modal" onclick="closeProductModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeProductModal()">&times;</span>
+    <img id="productImg" src="" alt="">
+    <div class="info">
+      <h2 id="productTitle"></h2>
+      <div class="actions">
+        <input type="number" id="productQty" value="1" min="1">
+        <button id="productAddBtn">Добавить</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Кнопка "Наверх" -->
@@ -106,29 +149,7 @@
 </div>
 
 <script>
-  const imageFiles = [
-    "АЗ-001ц_2,39.jpg","АЗ-002ц_2,42.jpg","АЗ-003ц_1,51.jpg","АЗ-004ц_1,79.jpg","АЗ-005_1,52.jpg",
-    "АЗ-006_1,13.jpg","АЗ-007_0,98.jpg","АЗ-008_1,27.jpg","АЗ-009_3,79.jpg","АЗ-010_0,90.jpg",
-    "АЗ-011_3,02.jpg","АЗ-012_0,92.jpg","АЗ-013_1,88.jpg","АЗ-014_1,65.jpg","АЗ-015_2,35.jpg",
-    "АЗ-016_2,30.jpg","АЗ-017_1,04.jpg","АЗ-018_1,59.jpg","АЗ-019_1,25.jpg","АЗ-020_0,62.jpg",
-    "АЗ-021_0,75.jpg","АЗ-022_1,68.jpg","АЗ-023_1,15.jpg","АЗ-024_0,80.jpg","АЗ-025_0,85.jpg",
-    "АЗ-026_1,71.jpg","АЗ-027_1,21.jpg","АЗ-028_0,79.jpg","АЗ-029_2,00.jpg","АЗ-030_2,65.jpg",
-    "АЗ-031_0,95.jpg","АЗ-032_2,15.jpg","АЗ-033_0,89.jpg","АЗ-034_1,44.jpg","АЗ-035_3,42.jpg",
-    "АЗ-036_2,18.jpg","АЗ-037_1,25.jpg","АЗ-038_1,76.jpg","АЗ-039_1,19.jpg","АЗ-040_3,20.jpg",
-    "АЗ-041_3,47.jpg","АЗ-042_2,54.jpg","АЗ-042_3,17.jpg","АЗ-043_3,30.jpg","АЗ-044_2,61.jpg",
-    "АЗ-045_2,47.jpg","АЗ-046_2,20.jpg","АЗ-047_1,46.jpg","АЗ-048_2,87.jpg","АЗ-049_1,95.jpg",
-    "АЗ-050_1,13.jpg","АЗ-051_1,39.jpg","АЗ-052_1,59.jpg","АЗ-053_1,76.jpg","АЗ-054_1,24.jpg",
-    "АЗ-055_2,87.jpg","АЗ-056_2,05.jpg","АЗ-057_1,92.jpg","АЗ-058_1,68.jpg","АЗ-059_2,01.jpg",
-    "АЗ-060_2,12.jpg","АЗ-061_2,06.jpg","АЗ-062_2,22.jpg","АЗ-063_1,63.jpg","АЗ-064_2,18.jpg",
-    "АЗ-065_1,09.jpg","АЗ-066_4,42.jpg","АЗ-067_1,37.jpg","АЗ-068_7,49.jpg","АЗ-069_2,84.jpg",
-    "АЗ-070_2,25.jpg","АЗ-071_0,73.jpg","АЗ-072_0,40.jpg","АЗ-073_0,60.jpg","АЗ-074_1,43.jpg",
-    "АЗ-075_0,57.jpg","АЗ-076_0,58.jpg","АЗ-077_2,85.jpg","АЗ-078_5,19.jpg","АЗ-079_3,25.jpg",
-    "АЗ-080_1,87.jpg","АЗ-081_1,15.jpg","АЗ-082_2,45.jpg","АЗ-083_2,02.jpg","АЗ-084_2,49.jpg",
-    "АЗ-085_2,12.jpg","АЗ-086_3,18.jpg","АЗ-087_3,76.jpg","АЗ-088_1,98.jpg","АЗ-090_1,19.jpg",
-    "АЗ-091_2,60.jpg","АЗ-092_2,14.jpg","АЗ-093_2,90.jpg","АЗ-094_2,62.jpg","АЗ-095_2,05.jpg",
-    "АЗ-096_3,20.jpg","АЗ-097_2,18.jpg","АЗ-098_7,24.jpg","АЗ-099_1,93.jpg","АЗ-100_2,67.jpg",
-    "АЗ-101_1,66.jpg","АЗ-102_1,75.jpg"
-  ];
+  const imageFiles = [ "АЗ-001ц_2,39.jpg","АЗ-002ц_2,42.jpg","АЗ-003ц_1,51.jpg","АЗ-004ц_1,79.jpg","АЗ-005_1,52.jpg", "АЗ-006_1,13.jpg","АЗ-007_0,98.jpg","АЗ-008_1,27.jpg","АЗ-009_3,79.jpg","АЗ-010_0,90.jpg", "АЗ-011_3,02.jpg","АЗ-012_0,92.jpg","АЗ-013_1,88.jpg","АЗ-014_1,65.jpg","АЗ-015_2,35.jpg", "АЗ-016_2,30.jpg","АЗ-017_1,04.jpg","АЗ-018_1,59.jpg","АЗ-019_1,25.jpg","АЗ-020_0,62.jpg", "АЗ-021_0,75.jpg","АЗ-022_1,68.jpg","АЗ-023_1,15.jpg","АЗ-024_0,80.jpg","АЗ-025_0,85.jpg", "АЗ-026_1,71.jpg","АЗ-027_1,21.jpg","АЗ-028_0,79.jpg","АЗ-029_2,00.jpg","АЗ-030_2,65.jpg", "АЗ-031_0,95.jpg","АЗ-032_2,15.jpg","АЗ-033_0,89.jpg","АЗ-034_1,44.jpg","АЗ-035_3,42.jpg", "АЗ-036_2,18.jpg","АЗ-037_1,25.jpg","АЗ-038_1,76.jpg","АЗ-039_1,19.jpg","АЗ-040_3,20.jpg", "АЗ-041_3,47.jpg","АЗ-042_2,54.jpg","АЗ-042_3,17.jpg","АЗ-043_3,30.jpg","АЗ-044_2,61.jpg", "АЗ-045_2,47.jpg","АЗ-046_2,20.jpg","АЗ-047_1,46.jpg","АЗ-048_2,87.jpg","АЗ-049_1,95.jpg", "АЗ-050_1,13.jpg","АЗ-051_1,39.jpg","АЗ-052_1,59.jpg","АЗ-053_1,76.jpg","АЗ-054_1,24.jpg", "АЗ-055_2,87.jpg","АЗ-056_2,05.jpg","АЗ-057_1,92.jpg","АЗ-058_1,68.jpg","АЗ-059_2,01.jpg", "АЗ-060_2,12.jpg","АЗ-061_2,06.jpg","АЗ-062_2,22.jpg","АЗ-063_1,63.jpg","АЗ-064_2,18.jpg", "АЗ-065_1,09.jpg","АЗ-066_4,42.jpg","АЗ-067_1,37.jpg","АЗ-068_7,49.jpg","АЗ-069_2,84.jpg", "АЗ-070_2,25.jpg","АЗ-071_0,73.jpg","АЗ-072_0,40.jpg","АЗ-073_0,60.jpg","АЗ-074_1,43.jpg", "АЗ-075_0,57.jpg","АЗ-076_0,58.jpg","АЗ-077_2,85.jpg","АЗ-078_5,19.jpg","АЗ-079_3,25.jpg", "АЗ-080_1,87.jpg","АЗ-081_1,15.jpg","АЗ-082_2,45.jpg","АЗ-083_2,02.jpg","АЗ-084_2,49.jpg", "АЗ-085_2,12.jpg","АЗ-086_3,18.jpg","АЗ-087_3,76.jpg","АЗ-088_1,98.jpg","АЗ-090_1,19.jpg", "АЗ-091_2,60.jpg","АЗ-092_2,14.jpg","АЗ-093_2,90.jpg","АЗ-094_2,62.jpg","АЗ-095_2,05.jpg", "АЗ-096_3,20.jpg","АЗ-097_2,18.jpg","АЗ-098_7,24.jpg","АЗ-099_1,93.jpg","АЗ-100_2,67.jpg", "АЗ-101_1,66.jpg","АЗ-102_1,75.jpg" ];
 
   const gallery = document.getElementById("gallery");
 
@@ -136,27 +157,35 @@
   function saveCart(cart) { localStorage.setItem("cart", JSON.stringify(cart)); }
   function updateCartCount() { document.getElementById("cart-count").textContent = getCart().length; }
 
-  function addToCart(button, productName) {
-    const cart = getCart();
-    if (!cart.find(item => item.name === productName)) {
-      cart.push({ name: productName, qty: 1 });
-      saveCart(cart);
-      updateCartCount();
-      button.textContent = "✓";
-      button.disabled = true;
-    }
+  let currentProduct = null;
+
+  function openProductModal(src, name) {
+    currentProduct = name;
+    document.getElementById("productImg").src = src;
+    document.getElementById("productTitle").textContent = name;
+    document.getElementById("productQty").value = 1;
+    document.getElementById("productModal").style.display = "flex";
   }
 
-  function markAddedProducts() {
-    const cart = getCart();
-    document.querySelectorAll(".add-to-cart").forEach(btn => {
-      const productName = btn.getAttribute("data-name");
-      if (cart.some(item => item.name === productName)) {
-        btn.textContent = "✓";
-        btn.disabled = true;
-      }
-    });
+  function closeProductModal() {
+    document.getElementById("productModal").style.display = "none";
   }
+
+  document.getElementById("productAddBtn").onclick = () => {
+    const qty = parseInt(document.getElementById("productQty").value);
+    const cart = getCart();
+
+    let item = cart.find(i => i.name === currentProduct);
+    if (item) {
+      item.qty += qty;
+    } else {
+      cart.push({ name: currentProduct, qty });
+    }
+
+    saveCart(cart);
+    updateCartCount();
+    closeProductModal();
+  };
 
   imageFiles.forEach(file => {
     const rawName = file.split('/').pop().replace(/\.[^/.]+$/, "");
@@ -167,15 +196,11 @@
     const item = document.createElement("div");
     item.className = "item";
     item.innerHTML = `
-      <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
+      <img src="${src}" alt="${rawName}" onclick="openProductModal('${src}', '${cleanName}')" />
       <p>${displayName}</p>
-      <button class="add-to-cart" data-name="${cleanName}" onclick="addToCart(this, '${cleanName}')">Добавить</button>
     `;
     gallery.appendChild(item);
   });
-
-  function openModal(src) { document.getElementById("modal-img").src = src; document.getElementById("modal").style.display = "flex"; }
-  function closeModal() { document.getElementById("modal").style.display = "none"; }
 
   window.onscroll = function () {
     const btn = document.getElementById("topBtn");
@@ -184,7 +209,6 @@
   function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
   updateCartCount();
-  markAddedProducts();
 </script>
 </body>
 </html>

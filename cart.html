@@ -25,6 +25,9 @@
     <tbody></tbody>
   </table>
 
+  <!-- 🔥 Кнопка очистки -->
+  <button id="clear-cart" class="btn-clear">Очистить корзину</button>
+
   <h2>Оформление заказа</h2>
   <form id="order-form">
     <div class="form-group">
@@ -149,6 +152,15 @@
     .catch(err=>{
       alert("Ошибка при отправке заказа ❌ " + JSON.stringify(err));
     });
+  });
+
+  // 🔥 Очистка корзины
+  document.getElementById("clear-cart").addEventListener("click", ()=>{
+    if(confirm("Очистить корзину полностью?")){
+      cart = [];
+      saveCart();
+      renderCart();
+    }
   });
 
   renderCart();
