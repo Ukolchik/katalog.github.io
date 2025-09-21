@@ -69,9 +69,7 @@
       // Параметры для цепей
       let paramsHtml = '';
       if(item.type === 'chain') {
-        // Длина
         const lengthSelect = `<select data-index="${index}" class="length-select">${chainLengths.map(l=>`<option value="${l}" ${l===item.length?'selected':''}>${l}</option>`).join('')}</select>`;
-        // Ширина
         const widthSelect = `<select data-index="${index}" class="width-select">${item.availableWidths.map(w=>`<option value="${w}" ${w===item.width?'selected':''}>${w}</option>`).join('')}</select>`;
         paramsHtml = `Длина: ${lengthSelect} мм, Ширина: ${widthSelect} мм`;
       } else {
@@ -86,7 +84,7 @@
       cartTableBody.appendChild(row);
     });
 
-    // Слушатели изменений количества
+    // изменения количества
     document.querySelectorAll("#cart-table input[type='number']").forEach(input=>{
       input.addEventListener("change", e=>{
         const idx = e.target.dataset.index;
@@ -95,7 +93,7 @@
       });
     });
 
-    // Слушатели изменений длины/ширины для цепей
+    // изменения длины/ширины
     document.querySelectorAll(".length-select").forEach(select=>{
       select.addEventListener("change", e=>{
         const idx = e.target.dataset.index;
@@ -116,15 +114,17 @@
     localStorage.setItem("cart", JSON.stringify(cart));
   }
 
+  // 🔥 Формируем список товаров «в столбик» для письма
   function getCartHtml() {
-    if(cart.length === 0) return "<li>Корзина пуста</li>";
+    if(cart.length === 0) return "Корзина пуста";
+
     return cart.map(item=>{
       if(item.type==='chain'){
-        return `<li>${item.name} — ${item.qty} шт., длина ${item.length} мм, ширина ${item.width} мм</li>`;
+        return `${item.name} ${item.length} мм ${item.width} мм ${item.qty} шт`;
       } else {
-        return `<li>${item.name} — ${item.qty} шт.</li>`;
+        return `${item.name} ${item.qty} шт`;
       }
-    }).join("");
+    }).join("\n");
   }
 
   document.getElementById("order-form").addEventListener("submit", function(e){
