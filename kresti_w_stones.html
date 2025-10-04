@@ -75,7 +75,7 @@ document.getElementById("productAddBtn").onclick = () => {
   else{ cart.push({name: currentProduct, qty}); }
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
-  closeProductModal();
+  //closeProductModal();
 };
 
 imageFiles.forEach(file=>{
@@ -98,3 +98,4 @@ updateCartCount();
 </script>
 </body>
 </html>
+
