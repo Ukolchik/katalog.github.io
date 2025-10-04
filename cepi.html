@@ -5,81 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Цепи</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    #topBtn {
-      display: none;
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      z-index: 999;
-      font-size: 24px;
-      background-color: #444;
-      color: white;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    }
-    #topBtn:hover { background-color: #222; }
-
-    .add-to-cart {
-      display: inline-block;
-      margin-top: 6px;
-      background-color: #013077;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: 0.3s;
-    }
-    .add-to-cart:hover { background-color: #005fa3; }
-    .add-to-cart:disabled { background-color: #2ecc71; cursor: default; }
-
-    .item { text-align: center; margin-bottom: 20px; }
-    .item img { max-width: 100%; height: auto; border-radius: 6px; }
-    .item p { margin: 8px 0 4px; }
-
-    .cart-icon {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      cursor: pointer;
-      font-size: 28px;
-    }
-    .cart-count {
-      background-color: red;
-      color: white;
-      border-radius: 50%;
-      padding: 2px 8px;
-      font-size: 14px;
-      position: absolute;
-      top: -10px;
-      right: -10px;
-    }
-  </style>
 </head>
 <body>
 <header>
+  <a href="index.html" class="btn-back">← На главную</a>
   <h1>Каталог</h1>
-  <a href="index.html" class="back-link">← На главную</a>
   <p>Тел. +7 (910) 985-11-85</p>
   <div class="cart-icon" onclick="location.href='cart.html'">
-    🛒<span id="cart-count" class="cart-count">0</span>
+    🛒 <span id="cart-count" class="cart-count">0</span>
   </div>
 </header>
 
 <main class="gallery" id="gallery"></main>
 
-<div id="modal" class="modal" onclick="closeModal()">
-  <span class="close" onclick="closeModal()">&times;</span>
-  <img class="modal-content" id="modal-img" />
+<!-- Модальное окно карточки -->
+<div id="productModal" class="modal" onclick="closeProductModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeProductModal()">&times;</span>
+    <img id="productImg" src="" alt="">
+    <div class="info">
+      <h2 id="productTitle"></h2>
+      <div class="actions">
+        <label>Ширина:
+          <select id="productWidth"></select>
+        </label>
+        <label>Длина:
+          <select id="productLength"></select>
+        </label>
+        <div>
+          <span>Количество:</span>
+          <input type="number" id="productQty" value="0" min="0">
+        </div>
+        <button id="productAddBtn">Добавить</button>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Кнопка "Наверх" -->
 <button onclick="scrollToTop()" id="topBtn" title="Наверх">↑</button>
+
+<!-- Уведомление -->
+<div id="notify" class="notify">✅ Товар добавлен в корзину</div>
 
 <div class="order-info">
   Чтобы сделать заказ, <br>выберите товары в каталоге и свяжитесь с нами:<br>
@@ -89,83 +56,107 @@
 </div>
 
 <script>
-  const chains = [
-    { file: "Бисмарк граненый_0,5-1.jpeg", name: "Бисмарк граненый", widths: [0.5, 0.7, 1] },
-    { file: "Колос_0,4.jpeg", name: "Колос", widths: [0.4] },
-    { file: "Кордовая двойная_0,4.jpeg", name: "Кордовая двойная", widths: [0.4] },
-    { file: "Кордовая тройная_0,35 0,5.jpeg", name: "Кордовая тройная", widths: [0.35, 0.5] },
-    { file: "Лав граненая_0,4 0,5.jpeg", name: "Лав граненая", widths: [0.4, 0.5] },
-    { file: "Нонна граненый_0,4-0,7.jpeg", name: "Нонна граненый", widths: [0.4, 0.7] },
-    { file: "Панцирь граненый_0,4-1,2.jpeg", name: "Панцирь граненый", widths: [0.4, 1.2] },
-    { file: "Панцирь двойной граненый_0,8.jpeg", name: "Панцирь двойной граненый", widths: [0.8] },
-    { file: "Панцирь плоский граненый_0,6-1,5.jpg", name: "Панцирь плоский граненый", widths: [0.6, 1.5] },
-    { file: "Ромб двойной граненый_0,4-0,9.jpeg", name: "Ромб двойной граненый", widths: [0.4, 0.9] },
-    { file: "Ромб тройной граненый_0,4-0,7.jpeg", name: "Ромб тройной граненый", widths: [0.4, 0.7] },
-    { file: "Сингапур_0,3 0,4 0,5.jpeg", name: "Сингапур", widths: [0.3, 0.4, 0.5] },
-    { file: "Тигровый глаз_0,6.jpeg", name: "Тигровый глаз", widths: [0.6] },
-    { file: "Улитка_0,6 0,8.jpeg", name: "Улитка", widths: [0.6, 0.8] },
-    { file: "Якорь граненый_0,5-1,2.jpeg", name: "Якорь граненый", widths: [0.5, 1.2] },
-    { file: "Якорь плоский_0,5 0,6 0,7.jpeg", name: "Якорь плоский", widths: [0.5,0.6,0.7] }
-  ];
+const chains = [
+  { file: "Бисмарк граненый_0,5-1.jpeg", name: "Бисмарк граненый", widths: [0.5, 0.6, 0.7, 0.8, 0.9, 1] },
+  { file: "Колос_0,4.jpeg", name: "Колос", widths: [0.4] },
+  { file: "Кордовая двойная_0,4.jpeg", name: "Кордовая двойная", widths: [0.4] },
+  { file: "Кордовая тройная_0,35 0,5.jpeg", name: "Кордовая тройная", widths: [0.35, 0.5] },
+  { file: "Лав граненая_0,4 0,5.jpeg", name: "Лав граненая", widths: [0.4, 0.5] },
+  { file: "Нонна граненый_0,4-0,7.jpeg", name: "Нонна граненый", widths: [0.4, 0.5, 0.6, 0.7] },
+  { file: "Панцирь граненый_0,4-1,2.jpeg", name: "Панцирь граненый", widths: [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2] },
+  { file: "Панцирь двойной граненый_0,8.jpeg", name: "Панцирь двойной граненый", widths: [0.8] },
+  { file: "Панцирь плоский граненый_0,6-1,5.jpg", name: "Панцирь плоский граненый", widths: [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.4, 1.5] },
+  { file: "Ромб двойной граненый_0,4-0,9.jpeg", name: "Ромб двойной граненый", widths: [0.4, 0.5, 0.6, 0.7, 0.8, 0.9] },
+  { file: "Ромб тройной граненый_0,4-0,7.jpeg", name: "Ромб тройной граненый", widths: [0.4, 0.5, 0.6, 0.7] },
+  { file: "Сингапур_0,3 0,4 0,5.jpeg", name: "Сингапур", widths: [0.3, 0.4, 0.5] },
+  { file: "Тигровый глаз_0,6.jpeg", name: "Тигровый глаз", widths: [0.6] },
+  { file: "Улитка_0,6 0,8.jpeg", name: "Улитка", widths: [0.6, 0.8] },
+  { file: "Якорь граненый_0,5-1,2.jpeg", name: "Якорь граненый", widths: [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2] },
+  { file: "Якорь плоский_0,5 0,6 0,7.jpeg", name: "Якорь плоский", widths: [0.5, 0.6, 0.7] }
+];
 
-  const gallery = document.getElementById("gallery");
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+const cartCount = document.getElementById("cart-count");
+function updateCartCount(){ cartCount.textContent = cart.reduce((a,b)=>a+b.qty,0); }
 
-  function getCart() { return JSON.parse(localStorage.getItem("cart")) || []; }
-  function saveCart(cart) { localStorage.setItem("cart", JSON.stringify(cart)); }
-  function updateCartCount() { document.getElementById("cart-count").textContent = getCart().length; }
+let currentProduct = null;
 
-  function addToCart(button, chain) {
-    const cart = getCart();
-    cart.push({
-      name: chain.name,
-      type: 'chain',
-      length: 40,
-      width: chain.widths[0],
-      availableWidths: chain.widths,
-      qty: 1
-    });
-    saveCart(cart);
-    updateCartCount();
-    button.textContent = "✓";
-    button.disabled = true;
-  }
+function openProductModal(src, chain){
+  currentProduct = chain;
+  document.getElementById("productImg").src = src;
+  document.getElementById("productTitle").textContent = chain.name;
 
-  function markAddedProducts() {
-    const cart = getCart();
-    document.querySelectorAll(".add-to-cart").forEach(btn => {
-      const productName = btn.getAttribute("data-name");
-      if(cart.some(item => item.name === productName)){
-        btn.textContent = "✓";
-        btn.disabled = true;
-      }
-    });
-  }
-
-  chains.forEach(chain => {
-    const rawName = chain.file.split('/').pop().replace(/\.[^/.]+$/, "");
-    const displayName = rawName.replace(/[_]/, '<br>');
-    const src = `images/цепи/${chain.file}`;
-
-    const item = document.createElement("div");
-    item.className = "item";
-    item.innerHTML = `
-      <img src="${src}" alt="${rawName}" onclick="openModal(this.src)" />
-      <p>${displayName}</p>
-      <button class="add-to-cart" data-name="${chain.name}" onclick='addToCart(this, ${JSON.stringify(chain)})'>Добавить</button>
-    `;
-    gallery.appendChild(item);
+  // селектор ширины
+  const widthSelect = document.getElementById("productWidth");
+  widthSelect.innerHTML = "";
+  chain.widths.forEach(w=>{
+    let opt = document.createElement("option");
+    opt.value = w;
+    opt.textContent = w + " мм";
+    widthSelect.appendChild(opt);
   });
 
-  function openModal(src){ document.getElementById("modal-img").src = src; document.getElementById("modal").style.display = "flex"; }
-  function closeModal(){ document.getElementById("modal").style.display = "none"; }
+  // селектор длины
+  const lengthSelect = document.getElementById("productLength");
+  lengthSelect.innerHTML = "";
+  [40,45,50,55,60,65,70].forEach(l=>{
+    let opt = document.createElement("option");
+    opt.value = l;
+    opt.textContent = l + " см";
+    lengthSelect.appendChild(opt);
+  });
 
-  window.onscroll = function(){
-    document.getElementById("topBtn").style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
-  }
-  function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+  document.getElementById("productQty").value = 0;
+  document.getElementById("productModal").style.display = "flex";
+}
 
+function closeProductModal(){ document.getElementById("productModal").style.display = "none"; }
+
+// уведомление
+function showNotify() {
+  const notify = document.getElementById("notify");
+  notify.style.display = "block";
+  setTimeout(() => {
+    notify.style.display = "none";
+  }, 2800);
+}
+
+document.getElementById("productAddBtn").onclick = () => {
+  let qty = parseInt(document.getElementById("productQty").value);
+  if(qty<=0) return;
+
+  let width = parseFloat(document.getElementById("productWidth").value);
+  let length = parseInt(document.getElementById("productLength").value);
+
+  let item = cart.find(i=>i.name===currentProduct.name && i.width===width && i.length===length);
+  if(item){ item.qty += qty; }
+  else{ cart.push({name: currentProduct.name, type:'chain', width, length, qty, availableWidths: currentProduct.widths}); }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
-  markAddedProducts();
+  showNotify(); // ⚡ уведомление
+};
+
+const gallery = document.getElementById("gallery");
+chains.forEach(chain=>{
+  const rawName = chain.file.replace(/\.[^/.]+$/,"");
+  const src = `images/цепи/${chain.file}`;
+  const item = document.createElement("div");
+  item.className="item";
+  item.innerHTML = `
+    <img src="${src}" alt="${rawName}" onclick='openProductModal("${src}", ${JSON.stringify(chain)})'>
+    <p>${chain.name}</p>
+  `;
+  gallery.appendChild(item);
+});
+
+window.onscroll = () => {
+  document.getElementById("topBtn").style.display = document.documentElement.scrollTop>300 ? "block":"none";
+}
+function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+
+updateCartCount();
 </script>
+
 </body>
 </html>

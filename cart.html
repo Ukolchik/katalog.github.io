@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Корзина</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
   <h1>Корзина</h1>
-  <a href="index.html" class="back-link">← На главную</a>
+  <a href="index.html" class="btn-back">← На главную</a>
 </header>
 
 <main class="cart-container">
@@ -18,11 +18,14 @@
     <thead>
       <tr>
         <th>Товар</th>
+        <th>Параметры</th>
         <th>Количество</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+
+  <!-- 🔥 Кнопка очистки -->
   <button id="clear-cart" class="btn-clear">Очистить корзину</button>
 
   <h2>Оформление заказа</h2>
@@ -45,38 +48,146 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
-const SERVICE_ID="service_j4uw3iu",TEMPLATE_ID="template_966t464",PUBLIC_KEY="dcPnlrnIbilT3UWlS";
-emailjs.init(PUBLIC_KEY);
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
-const tbody=document.querySelector("#cart-table tbody");
+  const SERVICE_ID = "service_j4uw3iu";
+  const TEMPLATE_ID = "template_966t464";
+  const PUBLIC_KEY = "dcPnlrnIbilT3UWlS";
 
-function renderCart(){
-  tbody.innerHTML="";
-  if(cart.length===0){ tbody.innerHTML=`<tr><td colspan="2">Корзина пуста</td></tr>`; return; }
-  cart.forEach((item,i)=>{
-    const row=document.createElement("tr");
-    row.innerHTML=`<td>${item.name}</td><td>${item.qty} шт</td>`;
-    tbody.appendChild(row);
-  });
+  emailjs.init(PUBLIC_KEY);
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartTableBody = document.querySelector("#cart-table tbody");
+
+  const chainLengths = [40,45,50,55,60,65,70];
+
+  function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  function renderCart() {
+    cartTableBody.innerHTML = "";
+    if(cart.length === 0){
+      cartTableBody.innerHTML = `<tr><td colspan="3">Корзина пуста</td></tr>`;
+      return;
+    }
+
+    cart.forEach((item, index) => {
+      const row = document.createElement("tr");
+
+      // Параметры для цепей
+      let paramsHtml = '';
+if (item.type === 'chain') {
+  const lengthSelect = `<select data-index="${index}" class="length-select">
+    ${chainLengths.map(l => `<option value="${l}" ${l===item.length?'selected':''}>${l}</option>`).join('')}
+  </select>`;
+
+  const widthSelect = `<select data-index="${index}" class="width-select">
+    ${item.availableWidths.map(w => `<option value="${w}" ${w===item.width?'selected':''}>${w}</option>`).join('')}
+  </select>`;
+
+  // оборачиваем параметры в контейнер .params
+  paramsHtml = `
+    <div class="params">
+      <div>Длина: ${lengthSelect} см</div>
+      <div>Ширина: ${widthSelect} мм</div>
+    </div>
+  `;
+} else {
+  paramsHtml = `<div class="params">-</div>`;
 }
 
-document.getElementById("clear-cart").addEventListener("click",()=>{
-  if(confirm("Очистить корзину?")){ cart=[]; localStorage.setItem("cart",JSON.stringify(cart)); renderCart(); }
-});
+      row.innerHTML = `
+        <td>${item.name}</td>
+        <td>${paramsHtml}</td>
+        <td style="display:flex; justify-content:space-between; align-items:center;">
+          <input type="number" min="1" value="${item.qty}" data-index="${index}" style="width:60px;">
+          <button class="btn-clear remove-item" data-index="${index}" style="padding:4px 8px;">Удалить</button>
+        </td>
+      `;
+      cartTableBody.appendChild(row);
+    });
 
-document.getElementById("order-form").addEventListener("submit",function(e){
-  e.preventDefault();
-  if(cart.length===0){ alert("Корзина пуста!"); return; }
-  const name=document.getElementById("name").value;
-  const phone=document.getElementById("phone").value;
-  const email=document.getElementById("email").value;
-  const items=cart.map(i=>`${i.name} ${i.qty} шт`).join("\n");
-  emailjs.send(SERVICE_ID,TEMPLATE_ID,{user_name:name,user_email:email,user_phone:phone,cart_items:items})
-  .then(()=>{ alert("Заказ отправлен!"); localStorage.removeItem("cart"); renderCart(); })
-  .catch(err=>{ alert("Ошибка отправки: "+JSON.stringify(err)); });
-});
+    // изменение количества
+    document.querySelectorAll("#cart-table input[type='number']").forEach(input=>{
+      input.addEventListener("change", e=>{
+        const idx = e.target.dataset.index;
+        cart[idx].qty = parseInt(e.target.value) || 1;
+        saveCart();
+      });
+    });
 
-renderCart();
+    // кнопка "Удалить"
+    document.querySelectorAll(".remove-item").forEach(btn=>{
+      btn.addEventListener("click", e=>{
+        const idx = e.target.dataset.index;
+        cart.splice(idx, 1);
+        saveCart();
+        renderCart();
+      });
+    });
+
+    // изменения длины/ширины
+    document.querySelectorAll(".length-select").forEach(select=>{
+      select.addEventListener("change", e=>{
+        const idx = e.target.dataset.index;
+        cart[idx].length = parseInt(e.target.value);
+        saveCart();
+      });
+    });
+    document.querySelectorAll(".width-select").forEach(select=>{
+      select.addEventListener("change", e=>{
+        const idx = e.target.dataset.index;
+        cart[idx].width = parseFloat(e.target.value);
+        saveCart();
+      });
+    });
+  }
+
+  // 🔥 Формируем список товаров «в столбик» для письма
+  function getCartHtml() {
+    if(cart.length === 0) return "Корзина пуста";
+    return cart.map(item=>{
+      if(item.type==='chain'){
+        return `${item.name} ${item.length} см ${item.width} мм ${item.qty} шт`;
+      } else {
+        return `${item.name} ${item.qty} шт`;
+      }
+    }).join("\n");
+  }
+
+  document.getElementById("order-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    if(cart.length===0){ alert("Корзина пуста!"); return; }
+
+    const name = document.getElementById("name").value;
+    const phone = document.getElementById("phone").value;
+    const email = document.getElementById("email").value;
+
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+      user_name: name,
+      user_email: email,
+      user_phone: phone,
+      cart_items: getCartHtml()
+    })
+    .then(()=>{
+      alert("Ваш заказ успешно отправлен! ✅");
+      localStorage.removeItem("cart");
+      window.location.reload();
+    })
+    .catch(err=>{
+      alert("Ошибка при отправке заказа ❌ " + JSON.stringify(err));
+    });
+  });
+
+  // 🔥 Очистка корзины
+  document.getElementById("clear-cart").addEventListener("click", ()=>{
+    if(confirm("Очистить корзину полностью?")){
+      cart = [];
+      saveCart();
+      renderCart();
+    }
+  });
+
+  renderCart();
 </script>
 </body>
 </html>

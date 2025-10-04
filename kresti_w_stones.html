@@ -8,13 +8,14 @@
 </head>
 <body>
 <header>
+  <a href="index.html" class="btn-back">← На главную</a>
   <h1>Каталог</h1>
-  <a href="index.html" class="back-link">← На главную</a>
   <p>Тел. +7 (910) 985-11-85</p>
   <div class="cart-icon" onclick="location.href='cart.html'">
     🛒 <span id="cart-count" class="cart-count">0</span>
   </div>
 </header>
+
 
 <main class="gallery" id="gallery"></main>
 
@@ -28,7 +29,6 @@
       <div class="actions">
         <span>Количество:</span>
         <input type="number" id="productQty" value="0" min="0">
-        <span>шт.</span>
         <button id="productAddBtn">Добавить</button>
       </div>
     </div>

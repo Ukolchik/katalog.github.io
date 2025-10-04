@@ -245,6 +245,7 @@ header {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-direction: column;
 }
 
 .actions span {
@@ -256,6 +257,11 @@ header {
   padding: 5px;
   text-align: center;
 }
+.actions select {
+  padding: 6px 8px;  /* внутренние отступы */
+  font-size: 16px;   /* размер шрифта */ 
+}
+
 
 .actions button {
   padding: 8px 15px;
@@ -293,4 +299,180 @@ header {
     width: 100%;
     max-width: none;
   }
+}
+
+#topBtn {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 999;
+      font-size: 24px;
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    #topBtn:hover { background-color: #222; }
+
+    /* кнопка добавления в корзину под текстом */
+    .add-to-cart {
+      display: inline-block;
+      margin-top: 6px;
+      background-color: #013077;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: 0.3s;
+    }
+    .add-to-cart:hover { background-color: #005fa3; }
+    .add-to-cart:disabled { background-color: #2ecc71; cursor: default; }
+
+    .item {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .item p {
+      margin: 8px 0 4px;
+    }
+
+    /* корзина в хедере */
+    .cart-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 28px;
+    }
+
+    .cart-count {
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 8px;
+      font-size: 14px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+    }
+    /* ===== Таблица корзины ===== */
+#cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* равномерное распределение колонок */
+}
+
+#cart-table th, 
+#cart-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  word-wrap: break-word;
+}
+
+#cart-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+/* Кнопка удалить в стиле других кнопок */
+.remove-item {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.remove-item:hover {
+  background-color: #c62828;
+}
+
+/* Контейнер для input + кнопка удалить */
+#cart-table td input[type="number"] {
+  width: 60px;
+  margin-right: 8px;
+}
+/* Кнопка "На главную" */
+.btn-back {
+  display: inline-block;
+  background-color: #013077;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s, transform 0.2s;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.btn-back:hover {
+  background-color: #005fa3;
+  transform: translateY(-2px);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 600px) {
+  .btn-back {
+    font-size: 14px;
+    padding: 8px 16px;
+    top: 15px;
+    left: 15px;
+  }
+}
+
+.notify {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #28a745; /* зелёный фон */
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  font-size: 14px;
+  display: none;
+  z-index: 9999;
+  animation: fadein 0.3s, fadeout 0.3s 2.5s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeout {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-10px); }
+}
+.params {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* расстояние между строками */
+  margin-top: 8px;
+}
+
+.params div {
+  font-size: 14px;
+  line-height: 1.4;
 }
