@@ -147,7 +147,7 @@ if (item.type === 'chain') {
     if(cart.length === 0) return "Корзина пуста";
     return cart.map(item=>{
       if(item.type==='chain'){
-        return `${item.name} ${item.length} см ${item.width} мм ${item.qty} шт`;
+        return `${item.name} ${item.width} мм ${item.length} см ${item.qty} шт`;
       } else {
         return `${item.name} ${item.qty} шт`;
       }
@@ -191,3 +191,4 @@ if (item.type === 'chain') {
 </script>
 </body>
 </html>
+
